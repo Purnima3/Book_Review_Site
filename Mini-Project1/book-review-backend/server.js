@@ -2,11 +2,10 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const connectDB = require('./config/db')
-
-
-
+const connectDB = require('./config/db');
+const {createAdmin} = require('./scripts/setup')
 const signupRoute = require("./routes/Signup")
+const loginRoute = require("./routes/Login")
 
 const app = express();
 connectDB();
@@ -16,7 +15,9 @@ app.use(cors());
 app.use(bodyParser.json());
 console.log("server.js called")
 
+createAdmin()
 app.use("/",signupRoute)
+app.use("/",loginRoute)
 app.get("/", (req, res)=> {
     res.send("Hello World")
 })

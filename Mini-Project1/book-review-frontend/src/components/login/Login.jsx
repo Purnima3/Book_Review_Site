@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,20 +12,41 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 
 const defaultTheme = createTheme();
 
 function Login() {
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    const email = data.get('email');
+    const password = data.get('password');
+
+    try {
+      const response = await axios.post('http://localhost:3001/login', { email, password });
+      const { token, user } = response.data;
+
+    
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      
+      if (user.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/customer-dashboard');
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+     
+    }
   };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -45,8 +65,7 @@ function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, border: '1px solid #ccc', 
-    padding: '5rem',}}>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, border: '1px solid #ccc', padding: '5rem' }}>
             <TextField
               margin="normal"
               required
@@ -93,12 +112,9 @@ function Login() {
             </Grid>
           </Box>
         </Box>
-        
       </Container>
     </ThemeProvider>
-  )
+  );
 }
 
-export default Login
-
-
+export default Login;

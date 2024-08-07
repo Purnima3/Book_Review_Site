@@ -15,11 +15,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
 export default function SignUp() {
-  const [role, setRole] = React.useState('customer');
-
-  const handleRoleChange = (event) => {
-    setRole(event.target.value);
-  };
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,7 +26,7 @@ export default function SignUp() {
       lastName: data.get('lastName'),
       email: data.get('email'),
       password: data.get('password'),
-      role: role,
+      
     };
 
     try {
@@ -113,22 +109,7 @@ export default function SignUp() {
                 autoComplete="new-password"
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth required>
-                <InputLabel id="role-label">Role</InputLabel>
-                <Select
-                  labelId="role-label"
-                  id="role"
-                  name="role"
-                  value={role}
-                  onChange={handleRoleChange}
-                  label="Role"
-                >
-                  <MenuItem value="customer">Customer</MenuItem>
-                  <MenuItem value="admin">Admin</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
+            
           </Grid>
           <Button
             type="submit"
