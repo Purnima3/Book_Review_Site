@@ -1,11 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Box, TextField, Button } from '@mui/material';
+import { Container, Typography, Box, TextField, Button, Card, CardContent, CardMedia } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+import StarRatingComponent from 'react-star-rating-component';
+import { Rating } from '@mui/material';
 
-function BookDetail() {
-  const { id } = useParams(); // Get the book ID from the URL
+// Styled Components
+const StyledCard = styled(Card)(({ theme }) => ({
+  maxWidth: 600,
+  margin: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: theme.spacing(2),
+  boxShadow: theme.shadows[5],
+  backgroundColor: theme.palette.background.paper,
+}));
+
+const StyledCardMedia = styled(CardMedia)({
+  height: 240,
+  width: '100%',
+  objectFit: 'cover',
+});
+
+const ReviewBox = styled(Box)(({ theme }) => ({
+  p: theme.spacing(3), // Increased padding
+  border: `1px solid ${theme.palette.grey[400]}`,
+  borderRadius: theme.shape.borderRadius,
+  mb: theme.spacing(2),
+  backgroundColor: theme.palette.background.default,
+  transition: '0.3s',
+  '&:hover': {
+    backgroundColor: theme.palette.grey[100],
+    boxShadow: theme.shadows[3],
+    transform: 'scale(1.02)',
+  },
+}));
+
+const BookDetail = () => {
+  const { id } = useParams();
   const [book, setBook] = useState(null);
-  const [review, setReview] = useState({ username: '', rating: '', comment: '' });
+  const [review, setReview] = useState({ username: '', rating: 0, comment: '' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -44,10 +79,14 @@ function BookDetail() {
       }
       const updatedBook = await response.json();
       setBook(updatedBook);
-      setReview({ username: '', rating: '', comment: '' });
+      setReview({ username: '', rating: 0, comment: '' });
     } catch (err) {
       setError(err.message);
     }
+  };
+
+  const handleRatingChange = (nextValue) => {
+    setReview({ ...review, rating: nextValue });
   };
 
   if (loading) {
@@ -60,25 +99,27 @@ function BookDetail() {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom align="center">
-        {book.title}
-      </Typography>
-      <Typography variant="h6" align="center">by {book.author}</Typography>
-      <Typography variant="body1" align="center">{book.description}</Typography>
+        <Box mt={4} pl={27} pr={27} >
+  
+
+        <StyledCard >
+        
+        <CardContent>
+          <Typography variant="h4" component="div" gutterBottom>
+            {book.title}
+          </Typography>
+          <Typography variant="h6" color="textSecondary">
+            by {book.author}
+          </Typography>
+          <Typography variant="body1" paragraph>
+            {book.description}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            <strong>Overall Rating:</strong> {book.averageRating ? Math.round(book.averageRating) : 'No ratings yet'}
+          </Typography>
+        </CardContent>
+      </StyledCard>
       <Box mt={4}>
-        <Typography variant="h6">Reviews</Typography>
-        {book.reviews.length > 0 ? (
-          book.reviews.map((rev, index) => (
-            <Box key={index} p={1} border={1} borderRadius={1} mb={2}>
-              <Typography variant="subtitle1"><strong>{rev.username}</strong></Typography>
-              <Typography variant="body2">Rating: {rev.rating}</Typography>
-              <Typography variant="body2">{rev.comment}</Typography>
-            </Box>
-          ))
-        ) : (
-          <Typography variant="body2" color="textSecondary">No reviews yet.</Typography>
-        )}
-        <Box mt={2}>
           <Typography variant="h6">Add Review</Typography>
           <TextField
             name="username"
@@ -89,16 +130,17 @@ function BookDetail() {
             value={review.username}
             onChange={handleReviewChange}
           />
-          <TextField
-            name="rating"
-            label="Rating"
-            type="number"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={review.rating}
-            onChange={handleReviewChange}
-          />
+          <Box mt={2}>
+            <Typography>Rating:</Typography>
+            <StarRatingComponent
+              name="rating"
+              starCount={5}
+              value={review.rating}
+              onStarClick={handleRatingChange}
+              emptyStarColor="#bdbdbd"
+              starColor="#ffb400"
+            />
+          </Box>
           <TextField
             name="comment"
             label="Comment"
@@ -120,7 +162,23 @@ function BookDetail() {
             Submit Review
           </Button>
         </Box>
+      <Box mt={4}>
+        <Typography variant="h6">Reviews</Typography>
+        {book.reviews.length > 0 ? (
+          book.reviews.map((rev, index) => (
+            <ReviewBox key={index} mt={4} p={2}>
+              <Typography variant="subtitle1" gutterBottom><strong>{rev.username}</strong></Typography>
+              <Typography variant="body2" paragraph>Rating: <Rating name="read-only" value={rev.rating} readOnly /></Typography>
+              <Typography variant="body2">{rev.comment}</Typography>
+            </ReviewBox>
+          ))
+        ) : (
+          <Typography variant="body2" color="textSecondary">No reviews yet.</Typography>
+        )}
+        
       </Box>
+        </Box>
+      
     </Container>
   );
 }

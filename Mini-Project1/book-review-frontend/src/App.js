@@ -8,6 +8,7 @@ import Dashboard_admin from './components/Dashboard/Dashboard_admin';
 import Dashboard_cust from './components/Dashboard/Dashboard_cust';
 import Addbook from './components/AddBook/Addbook';
 import BookDetail from './components/Dashboard/BookDetail';
+import './App.css'
 
 function App() {
   return (

@@ -74,4 +74,23 @@ async function setReviewsByid(req,res) {
         }
 }
 
-module.exports = { bookInfo,getbooks,bookbyid,setReviewsByid};
+async function deleteBook(req,res)
+{
+    const { id } = req.params;
+
+    try {
+      
+      const result = await Book.findByIdAndDelete(id);
+      
+      if (!result) {
+        return res.status(404).send('Book not found');
+      }
+  
+      res.status(200).send('Book deleted successfully');
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error deleting book');
+    }
+}
+
+module.exports = { bookInfo, getbooks, bookbyid, setReviewsByid ,deleteBook};
