@@ -3,8 +3,9 @@ import { Container, Typography, Grid, Card, CardContent, CardMedia, Box } from '
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Rating } from '@mui/material';
+import PrimarySearchAppBar from '../PrimarySearchAppBar';
 
-// Styled Components
+
 const StyledCard = styled(Card)(({ theme }) => ({
   width: 270,
   height: 400,
@@ -68,6 +69,8 @@ const Dashboard_cust = () => {
   }
 
   return (
+    <>
+    <PrimarySearchAppBar/>
     <Container>
       <Typography variant="h4" gutterBottom align="center">
        Welcome : 
@@ -113,6 +116,7 @@ const Dashboard_cust = () => {
         ))}
       </Grid>
     </Container>
+    </>
   );
 }
 

@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Grid, Snackbar, Alert, Box, Card, CardContent } from '@mui/material';
+import PrimarySearchAppBar from '../PrimarySearchAppBar.jsx';
 
 function Addbook() {
     const [bookTitle, setBookTitle] = useState('');
@@ -68,6 +69,8 @@ function Addbook() {
     setSnackbarOpen(false);
   };
   return (
+    <>
+    <PrimarySearchAppBar/>
     <Container maxWidth="sm">
     <Box sx={{ my: 4 }}>
       <Typography variant="h4" gutterBottom align="center">
@@ -148,6 +151,7 @@ function Addbook() {
       </Alert>
     </Snackbar>
   </Container>
+  </>
   )
 }
 

@@ -4,8 +4,9 @@ import { useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import StarRatingComponent from 'react-star-rating-component';
 import { Rating } from '@mui/material';
+import PrimarySearchAppBar from '../PrimarySearchAppBar.jsx';
 
-// Styled Components
+
 const StyledCard = styled(Card)(({ theme }) => ({
   maxWidth: 600,
   margin: 'auto',
@@ -24,7 +25,7 @@ const StyledCardMedia = styled(CardMedia)({
 });
 
 const ReviewBox = styled(Box)(({ theme }) => ({
-  p: theme.spacing(3), // Increased padding
+  p: theme.spacing(3), 
   border: `1px solid ${theme.palette.grey[400]}`,
   borderRadius: theme.shape.borderRadius,
   mb: theme.spacing(2),
@@ -98,6 +99,8 @@ const BookDetail = () => {
   }
 
   return (
+    <>
+    <PrimarySearchAppBar/>
     <Container>
         <Box mt={4} pl={27} pr={27} >
   
@@ -180,6 +183,7 @@ const BookDetail = () => {
         </Box>
       
     </Container>
+    </>
   );
 }
 

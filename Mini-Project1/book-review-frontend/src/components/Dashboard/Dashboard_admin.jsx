@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Container, Typography, Grid, Card, CardContent, CardMedia, Button, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import StarIcon from '@mui/icons-material/Star'; // Star icon for rating
-import DeleteIcon from '@mui/icons-material/Delete'; // Delete icon
+import StarIcon from '@mui/icons-material/Star';
+import DeleteIcon from '@mui/icons-material/Delete'; 
+import PrimarySearchAppBar from '../PrimarySearchAppBar';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   width: 270, 
@@ -94,7 +95,7 @@ const Dashboard_admin = () => {
       if (!response.ok) {
         throw new Error('Failed to delete book');
       }
-      // Remove the deleted book from the state
+      
       setBooks((prevBooks) => prevBooks.filter((book) => book._id !== bookId));
     } catch (err) {
       setError(err.message);
@@ -110,6 +111,8 @@ const Dashboard_admin = () => {
   }
 
   return (
+    <>
+    <PrimarySearchAppBar/>
     <Container>
       <Typography variant="h4" gutterBottom align="center">
         Book Collection
@@ -158,6 +161,7 @@ const Dashboard_admin = () => {
         ))}
       </Grid>
     </Container>
+    </>
   );
 };
 
