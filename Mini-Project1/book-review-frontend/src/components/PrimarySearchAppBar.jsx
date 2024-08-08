@@ -15,7 +15,8 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import Logo from './logoimg.jpg';
+import { Avatar } from '@mui/material';
+import logo from "./logoimg.jpg";
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -165,7 +166,9 @@ export default function PrimarySearchAppBar() {
             aria-label="open drawer"
             sx={{ mr: 2 }}
           >
-            <img src={Logo} alt="Logo" style={{ height: '40px' }} />
+            
+           
+            <Avatar alt="Sc" src={logo} />
           </IconButton>
           <Typography
             variant="h6"
