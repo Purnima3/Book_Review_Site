@@ -6,6 +6,8 @@ import SignUp from './components/signup/SignUp';
 import Login from './components/login/Login';
 import Dashboard_admin from './components/Dashboard/Dashboard_admin';
 import Dashboard_cust from './components/Dashboard/Dashboard_cust';
+import Addbook from './components/AddBook/Addbook';
+import BookDetail from './components/Dashboard/BookDetail';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/admin-dashboard" element={<Dashboard_admin />} />
         <Route path="/customer-dashboard" element={<Dashboard_cust />} />
+        <Route path="/addbook" element={<Addbook />} />
+        <Route path="/books/:id" element={<BookDetail />} />
       </Routes>
     </Router>
     </div>

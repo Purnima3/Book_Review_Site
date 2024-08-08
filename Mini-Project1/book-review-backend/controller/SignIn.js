@@ -19,7 +19,7 @@ async function login(req, res) {
     const token = generateToken(user);
     res.status(200).json({ user: { id: user._id, email: user.email ,role:user.role}, token });
   } catch (error) {
-    console.error("Login error:", error); // Log the error
+    console.error("Login error:", error); 
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 }

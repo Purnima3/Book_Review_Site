@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,12 +13,16 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
+import { Snackbar, Alert, Card, CardContent } from '@mui/material'; 
 
 const defaultTheme = createTheme();
 
 function Login() {
   const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,7 +34,15 @@ function Login() {
     try {
       const response = await axios.post('http://localhost:3001/login', { email, password });
       const { token, user } = response.data;
-
+      
+      if (response.ok) {
+        setSnackbarMessage('Book added successfully');
+        setSnackbarSeverity('success');
+       
+      } else {
+        setSnackbarMessage('Failed to add book');
+        setSnackbarSeverity('error');
+      }
     
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
