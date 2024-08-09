@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Snackbar, Alert, Card, CardContent } from '@mui/material'; 
+import { Snackbar, Alert } from '@mui/material';
 
 const defaultTheme = createTheme();
 
@@ -35,37 +35,43 @@ function Login() {
       const response = await axios.post('http://localhost:3001/login', { email, password });
       const { token, user } = response.data;
       
-      if (response.ok) {
-        setSnackbarMessage('Book added successfully');
+      if (response.status === 200) {
+        setSnackbarMessage('Login successful');
         setSnackbarSeverity('success');
-       
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        if (user.role === 'admin') {
+          navigate('/admin-dashboard');
+        } else {
+          navigate('/customer-dashboard');
+        }
       } else {
-        setSnackbarMessage('Failed to add book');
+        setSnackbarMessage('Failed to login');
         setSnackbarSeverity('error');
       }
-    
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-
-      
-      if (user.role === 'admin') {
-        navigate('/admin-dashboard');
-      } else {
-        navigate('/customer-dashboard');
-      }
     } catch (error) {
-      console.error("Login error:", error);
-     
+      setSnackbarMessage('Login error');
+      setSnackbarSeverity('error');
+    } finally {
+      setSnackbarOpen(true);
     }
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   return (
-    <ThemeProvider theme={defaultTheme} p={8} m={20} mt={13}>
-      <Container component="main" maxWidth="xs">
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs" sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            backgroundColor: 'rgba(255, 255, 255, 0.9)', // Slightly opaque background color
+            padding: 4,
+            borderRadius: 2,
+            boxShadow: 3,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -77,7 +83,7 @@ function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, border: '1px solid #ccc', padding: '5rem' }}>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -124,6 +130,11 @@ function Login() {
             </Grid>
           </Box>
         </Box>
+        <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+          <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Container>
     </ThemeProvider>
   );

@@ -1,10 +1,14 @@
 
 body {
-    background-color:#f7eff7;
+    background-color:#ffffff;
+    background-color: #ffffff; 
+    background-image: url('bg-img2.webp'); 
+    background-size: cover;
+    background-position: center; 
+    background-repeat: no-repeat; 
   }
   
-  
- 
+
   
  
   

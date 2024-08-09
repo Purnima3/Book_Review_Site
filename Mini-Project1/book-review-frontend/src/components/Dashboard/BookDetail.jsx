@@ -6,7 +6,7 @@ import StarRatingComponent from 'react-star-rating-component';
 import { Rating } from '@mui/material';
 import PrimarySearchAppBar from '../PrimarySearchAppBar.jsx';
 
-
+// Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
   maxWidth: 600,
   margin: 'auto',
@@ -25,7 +25,7 @@ const StyledCardMedia = styled(CardMedia)({
 });
 
 const ReviewBox = styled(Box)(({ theme }) => ({
-  p: theme.spacing(3), 
+  p: theme.spacing(3),
   border: `1px solid ${theme.palette.grey[400]}`,
   borderRadius: theme.shape.borderRadius,
   mb: theme.spacing(2),
@@ -36,6 +36,26 @@ const ReviewBox = styled(Box)(({ theme }) => ({
     boxShadow: theme.shadows[3],
     transform: 'scale(1.02)',
   },
+}));
+
+const BackgroundBox = styled(Box)(({ theme }) => ({
+  backgroundImage: 'url("/path/to/your/background-image.jpg")', // Replace with your image path
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  minHeight: '100vh',
+  padding: theme.spacing(4),
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}));
+
+const ContentBox = styled(Box)(({ theme }) => ({
+  backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.spacing(4),
+  boxShadow: theme.shadows[5],
+  maxWidth: 800,
+  width: '100%',
 }));
 
 const BookDetail = () => {
@@ -100,89 +120,84 @@ const BookDetail = () => {
 
   return (
     <>
-    <PrimarySearchAppBar/>
-    <Container>
-        <Box mt={4} pl={27} pr={27} >
-  
-
-        <StyledCard >
-        
-        <CardContent>
-          <Typography variant="h4" component="div" gutterBottom>
-            {book.title}
-          </Typography>
-          <Typography variant="h6" color="textSecondary">
-            by {book.author}
-          </Typography>
-          <Typography variant="body1" paragraph>
-            {book.description}
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            <strong>Overall Rating:</strong> {book.averageRating ? Math.round(book.averageRating) : 'No ratings yet'}
-          </Typography>
-        </CardContent>
-      </StyledCard>
-      <Box mt={4}>
-          <Typography variant="h6">Add Review</Typography>
-          <TextField
-            name="username"
-            label="Username"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={review.username}
-            onChange={handleReviewChange}
-          />
-          <Box mt={2}>
-            <Typography>Rating:</Typography>
-            <StarRatingComponent
-              name="rating"
-              starCount={5}
-              value={review.rating}
-              onStarClick={handleRatingChange}
-              emptyStarColor="#bdbdbd"
-              starColor="#ffb400"
+      <PrimarySearchAppBar />
+      <BackgroundBox>
+        <ContentBox sx={{ pt:14 }}>
+          <StyledCard>
+            <CardContent>
+              <Typography variant="h4" component="div" gutterBottom>
+                {book.title}
+              </Typography>
+              <Typography variant="h6" color="textSecondary">
+                by {book.author}
+              </Typography>
+              <Typography variant="body1" paragraph>
+                {book.description}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                <strong>Overall Rating:</strong> {book.averageRating ? Math.round(book.averageRating) : 'No ratings yet'}
+              </Typography>
+            </CardContent>
+          </StyledCard>
+          <Box mt={4}>
+            <Typography variant="h6">Add Review</Typography>
+            <TextField
+              name="username"
+              label="Username"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={review.username}
+              onChange={handleReviewChange}
             />
+            <Box mt={2}>
+              <Typography>Rating:</Typography>
+              <StarRatingComponent
+                name="rating"
+                starCount={5}
+                value={review.rating}
+                onStarClick={handleRatingChange}
+                emptyStarColor="#bdbdbd"
+                starColor="#ffb400"
+              />
+            </Box>
+            <TextField
+              name="comment"
+              label="Comment"
+              variant="outlined"
+              fullWidth
+              multiline
+              rows={4}
+              margin="normal"
+              value={review.comment}
+              onChange={handleReviewChange}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddReview}
+              fullWidth
+              sx={{ mt: 2 }}
+            >
+              Submit Review
+            </Button>
           </Box>
-          <TextField
-            name="comment"
-            label="Comment"
-            variant="outlined"
-            fullWidth
-            multiline
-            rows={4}
-            margin="normal"
-            value={review.comment}
-            onChange={handleReviewChange}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddReview}
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            Submit Review
-          </Button>
-        </Box>
-      <Box mt={4}>
-        <Typography variant="h6">Reviews</Typography>
-        {book.reviews.length > 0 ? (
-          book.reviews.map((rev, index) => (
-            <ReviewBox key={index} mt={4} p={2}>
-              <Typography variant="subtitle1" gutterBottom><strong>{rev.username}</strong></Typography>
-              <Typography variant="body2" paragraph>Rating: <Rating name="read-only" value={rev.rating} readOnly /></Typography>
-              <Typography variant="body2">{rev.comment}</Typography>
-            </ReviewBox>
-          ))
-        ) : (
-          <Typography variant="body2" color="textSecondary">No reviews yet.</Typography>
-        )}
-        
-      </Box>
-        </Box>
-      
-    </Container>
+          <Box mt={4}>
+            <Typography variant="h6">Reviews</Typography>
+            {book.reviews.length > 0 ? (
+              book.reviews.map((rev, index) => (
+                <ReviewBox key={index} mt={4} p={2}>
+                  <Typography variant="subtitle1" gutterBottom><strong>{rev.username}</strong></Typography>
+                  <Typography variant="body2" paragraph>Rating: <Rating name="read-only" value={rev.rating} readOnly /></Typography>
+                  <Typography variant="body2">{rev.comment}</Typography>
+                </ReviewBox>
+              ))
+            ) : (
+              <Typography variant="body2" color="textSecondary">No reviews yet.</Typography>
+            )}
+          </Box>
+        </ContentBox>
+      </BackgroundBox>
     </>
   );
 }

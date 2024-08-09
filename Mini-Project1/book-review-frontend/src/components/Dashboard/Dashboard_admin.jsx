@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Grid, Card, CardContent, CardMedia, Button, Box } from '@mui/material';
+import { Container, Typography, Grid, Card, CardContent, CardMedia, Button, Box, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import StarIcon from '@mui/icons-material/Star';
@@ -7,30 +7,38 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PrimarySearchAppBar from '../PrimarySearchAppBar';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  width: 270, 
-  height: 380, 
+  width: '100%', // Ensure card width adjusts with screen size
+  maxWidth: 270, // Set a maximum width
+  height: 400, // Height of the card
   margin: theme.spacing(2),
   display: 'flex',
   flexDirection: 'column',
-  boxShadow: theme.shadows[5],
-  transition: 'transform 0.3s',
+  boxShadow: theme.shadows[10],
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: '#fff', // White background color
+  color: '#003366', // Dark blue text color
+  transition: 'transform 0.3s, box-shadow 0.3s',
   '&:hover': {
     transform: 'scale(1.05)',
+    boxShadow: theme.shadows[15],
   },
 }));
 
 const StyledCardMedia = styled(CardMedia)({
-  height: 180,
+  height: 200, // Adjusted height for the image
+  borderBottom: '1px solid #ddd', // Subtle border at the bottom of the image
 });
 
 const StyledCardContent = styled(CardContent)({
   flex: '1 0 auto',
   display: 'flex',
   flexDirection: 'column',
+  padding: '16px',
+  color: '#003366', // Dark blue text color
 });
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  marginTop: theme.spacing(2),
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.primary.contrastText,
   '&:hover': {
@@ -67,6 +75,8 @@ const Dashboard_admin = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteBookId, setDeleteBookId] = useState(null);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -87,19 +97,32 @@ const Dashboard_admin = () => {
     fetchBooks();
   }, []);
 
-  const handleDelete = async (bookId) => {
+  const handleDeleteClick = (bookId) => {
+    setDeleteBookId(bookId);
+    setOpenDialog(true); // Open the dialog when delete button is clicked
+  };
+
+  const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/books/${bookId}`, {
+      const response = await fetch(`http://localhost:3001/books/${deleteBookId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
         throw new Error('Failed to delete book');
       }
       
-      setBooks((prevBooks) => prevBooks.filter((book) => book._id !== bookId));
+      setBooks((prevBooks) => prevBooks.filter((book) => book._id !== deleteBookId));
     } catch (err) {
       setError(err.message);
+    } finally {
+      setOpenDialog(false);
+      setDeleteBookId(null);
     }
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false); // Close the dialog
+    setDeleteBookId(null); // Clear the book ID
   };
 
   if (loading) {
@@ -112,55 +135,73 @@ const Dashboard_admin = () => {
 
   return (
     <>
-    <PrimarySearchAppBar/>
-    <Container>
-      <Typography variant="h4" gutterBottom align="center">
-        Book Collection
-      </Typography>
-      <Link to="/addbook" style={{ textDecoration: 'none' }}>
-        <StyledButton variant="contained">
-          Add Book
-        </StyledButton>
-      </Link>
-      <Grid container spacing={3}>
-        {books.map((book) => (
-          <Grid item xs={12} sm={6} md={4} key={book._id}>
-            <StyledCard>
-              <StyledCardMedia
-                component="img"
-                image={book.image || 'img1.avif'} // Use a dynamic image if available
-                alt={book.title}
-              />
-              <StyledCardContent>
-                <Typography variant="h6" component="div" gutterBottom>
-                  {book.title}
-                </Typography>
-                <Typography variant="subtitle1" color="textSecondary">
-                  by {book.author}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" paragraph>
-                  <strong>Genre:</strong> {book.genre}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" paragraph>
-                  <strong>Description:</strong> {book.description}
-                </Typography>
-                <StarRating rating={Math.round(book.averageRating)} />
-                <Typography variant="body2" color="textSecondary" paragraph>
-                  <strong>Overall Rating:</strong> {Math.round(book.averageRating)} / 5
-                </Typography>
-                <DeleteButton
-                  variant="contained"
-                  startIcon={<DeleteIcon />}
-                  onClick={() => handleDelete(book._id)}
-                >
-                  Delete
-                </DeleteButton>
-              </StyledCardContent>
-            </StyledCard>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+      <PrimarySearchAppBar />
+      <Container sx={{ pt:14 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}> {/* Align button to the right */}
+          <Link to="/addbook" style={{ textDecoration: 'none' }}>
+            <StyledButton variant="contained">
+              Add Book
+            </StyledButton>
+          </Link>
+        </Box>
+        <Grid container spacing={3} justifyContent="center">
+          {books.map((book) => (
+            <Grid item xs={12} sm={6} md={4} key={book._id}>
+              <StyledCard>
+                <StyledCardMedia
+                  component="img"
+                  image={book.image || 'img1.avif'}
+                  alt={book.title}
+                />
+                <StyledCardContent>
+                  <Typography variant="h6" component="div" gutterBottom>
+                    {book.title}
+                  </Typography>
+                  <Typography variant="subtitle1" color="inherit">
+                    by {book.author}
+                  </Typography>
+                  <Typography variant="body2" color="inherit" paragraph>
+                    <strong>Genre:</strong> {book.genre}
+                  </Typography>
+                  <Typography variant="body2" color="inherit" paragraph>
+                    <strong>Description:</strong> {book.description}
+                  </Typography>
+                  <StarRating rating={Math.round(book.averageRating)} />
+                  <Typography variant="body2" color="inherit" paragraph>
+                    <strong>Overall Rating:</strong> {Math.round(book.averageRating)} / 5
+                  </Typography>
+                  <DeleteButton
+                    variant="contained"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => handleDeleteClick(book._id)}
+                  >
+                    Delete
+                  </DeleteButton>
+                </StyledCardContent>
+              </StyledCard>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            Are you sure you want to delete this book?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            No
+          </Button>
+          <Button onClick={handleDelete} color="primary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
